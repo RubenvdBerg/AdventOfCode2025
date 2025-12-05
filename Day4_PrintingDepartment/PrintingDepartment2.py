@@ -1,19 +1,19 @@
 import numpy as np
 
 def calculate_solution(input):
-    data = np.array([[char for char in row] for row in input.splitlines()])
+    data = np.array([[1 if char=="@" else 0 for char in row] for row in input.splitlines()])
     return calculate_rolls(data)
 
 def calculate_rolls(grid):
-    original_count = np.sum(grid == "@")
+    original_count = np.count_nonzero(grid)
     while True:
         start_grid = grid.copy()
-        for h,w in np.argwhere(grid == "@"):
+        for h,w in np.argwhere(grid == 1):
             if get_neighbours(grid, h, w) < 4:
-                grid[h][w] = "."
+                grid[h][w] = 0
         if np.array_equal(grid, start_grid):
             break
-    return original_count-np.sum(grid == "@")
+    return original_count-np.count_nonzero(grid)
 
 def get_neighbours(grid, y, x):
     max_y, max_x = grid.shape
@@ -23,7 +23,7 @@ def get_neighbours(grid, y, x):
 
     y0, y1 = limit_grid(y, max_y)
     x0, x1 = limit_grid(x, max_x)
-    return np.count_nonzero(grid[y0:y1, x0:x1] == "@") - 1
+    return np.count_nonzero(grid[y0:y1, x0:x1]) - 1
 
 if __name__ == '__main__':
     with open("input.txt") as file:
